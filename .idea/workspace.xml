@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3dae9dd8-3000-4a1f-8c19-9220bcb21819" name="Changes" comment="add build workflow" />
+    <list default="true" id="3dae9dd8-3000-4a1f-8c19-9220bcb21819" name="Changes" comment="add build workflow">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,7 +51,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1686396018124</updated>
-      <workItem from="1686396019203" duration="4178000" />
+      <workItem from="1686396019203" duration="4851000" />
     </task>
     <task id="LOCAL-00001" summary="add build workflow">
       <created>1686401100083</created>
