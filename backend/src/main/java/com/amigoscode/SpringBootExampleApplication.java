@@ -30,6 +30,7 @@ public class SpringBootExampleApplication {
 		//ConfigurableApplicationContext applicationContext = SpringApplication.run(SpringBootExampleApplication.class, args);
 		
 		 SpringApplication.run(SpringBootExampleApplication.class, args);
+
 		 
 		
 		
