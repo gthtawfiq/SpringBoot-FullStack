@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Deployment Started
         run: >
-          curl && curl -X POST -H 'Content-type: application/json' 
+          curl && curl -X POST -H 'Content-type:application/json' 
           --data '{"text":"Deployment Started :loading:"}' 
           ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/checkout@v3
