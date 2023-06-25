@@ -50,8 +50,8 @@ jobs:
         run: echo "BUILD_NUMBER=$(date '+%d.%m.%Y.%H.%M.%S')" >> $GITHUB_OUTPUT
       - name: Building With Maven
         run: >
-          curl && curl -X POST -H "Content-type: application/json" 
-          --data "{\"text\":\"Building With Maven :maven:\"}" 
+          curl -X POST -H "Content-type: application/json" \
+          --data '{"text":"Building With Maven :maven:"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Build Package Push With Maven
