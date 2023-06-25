@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Send Slack Message
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Deployment Started :loading:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
       - uses: actions/setup-java@v3
@@ -50,7 +50,7 @@ jobs:
         run: echo "BUILD_NUMBER=$(date '+%d.%m.%Y.%H.%M.%S')" >> $GITHUB_OUTPUT
       - name: Building With Maven
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Building With Maven :maven:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -65,13 +65,13 @@ jobs:
           cat Dockerrun.aws.json
       - name: Docker Image
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Image Tag ${{steps.build-number.outputs.BUILD_NUMBER}} :docker:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Starting Deployment to Elastic Beanstalk
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Starting Deployment to Elastic Beanstalk :aws:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Deploy to Elastic Beanstalk
@@ -87,7 +87,7 @@ jobs:
           deployment_package: backend/Dockerrun.aws.json
       - name: Committing
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Committing to repo :githubloading:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Commit and push Dockerrun.aws.json
@@ -99,6 +99,6 @@ jobs:
           git push
       - name: Deployment and commit completed
         run: >
-          curl && curl -X POST -H "Content-type: application/json"
+          curl -X POST -H "Content-type: application/json"
           --data '{"text":"Deployment and commit completed :verified:"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
