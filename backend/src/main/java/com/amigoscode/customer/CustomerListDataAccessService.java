@@ -13,9 +13,9 @@ public class CustomerListDataAccessService implements CustomerDao {
 	
 	static {
 		customers = new ArrayList<>();
-		Customer alex = new Customer(1,"Alex","Alex@gmail.com",21);
+		Customer alex = new Customer(1,"Alex","Alex@gmail.com", "password", 21, Gender.MALE);
 		customers.add(alex);
-		Customer jamila = new Customer(2,"jamila","jamila@gmail.com",19);
+		Customer jamila = new Customer(2,"jamila","jamila@gmail.com", "password", 19, Gender.MALE);
 		customers.add(jamila);
 	}
 
@@ -62,6 +62,12 @@ public class CustomerListDataAccessService implements CustomerDao {
 	public void updateCustomer(Customer customer) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Optional<Customer> selectUserByEmail(String email) {
+		return customers.stream().filter(c->c.getUsername().equals(email))
+				.findFirst();
 	}
 
 }

@@ -1,22 +1,22 @@
 package com.amigoscode.customer;
 
 import com.amigoscode.AbstractTestconstainersUnitTest;
+import com.amigoscode.TestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({TestConfig.class})
 class CustomerRepositoryTest extends AbstractTestconstainersUnitTest {
     /**
      *----------------- @Autowired : Saying this is same thing as creating a constructor like in this example :--------------
@@ -48,9 +48,9 @@ class CustomerRepositoryTest extends AbstractTestconstainersUnitTest {
         Customer customer = new Customer(
                 FAKER.name().fullName(),
                 email,
-                18
+                "password", 18,
 
-        );
+                Gender.MALE);
         underTest.save(customer);
 
         //When

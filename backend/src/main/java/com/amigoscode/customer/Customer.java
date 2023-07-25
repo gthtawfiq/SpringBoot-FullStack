@@ -1,8 +1,13 @@
 package com.amigoscode.customer;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "customer",
@@ -13,7 +18,7 @@ import jakarta.persistence.*;
 			)
 }
 )
-public class Customer {
+public class Customer implements UserDetails {
 	
 	@Id
 	@SequenceGenerator(
@@ -33,27 +38,36 @@ public class Customer {
 	private String email;
 	@Column(nullable = false)
 	private Integer age;
-	
-	
-	
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+	@Column(nullable = false)
+	private String password;
+
+
 	public Customer() {
 		super();
 	}
 
 
 
-	public Customer(Integer id, String name, String email, Integer age) {
+	public Customer(Integer id, String name, String email, String password, Integer age, Gender gender) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
+		this.password=password;
 		this.age = age;
+		this.gender=gender;
 	}
-	public Customer(String name, String email, Integer age) {
+	public Customer(String name, String email, String password, Integer age, Gender gender) {
 		super();
 		this.name = name;
 		this.email = email;
+		this.password=password;
 		this.age = age;
+		this.gender=gender;
 	}
 
 
@@ -104,33 +118,70 @@ public class Customer {
 		this.age = age;
 	}
 
+	public Gender getGender() {
+		return gender;
+	}
 
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
 
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", name=" + name + ", email=" + email + ", age=" + age + "]";
+		return "Customer{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", age=" + age +
+				", gender=" + gender +
+				'}';
 	}
 
-
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Customer customer = (Customer) o;
+		return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(email, customer.email) && Objects.equals(age, customer.age) && gender == customer.gender;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(age, email, id, name);
+		return Objects.hash(id, name, email, age, gender);
 	}
-
-
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Customer other = (Customer) obj;
-		return Objects.equals(age, other.age) && Objects.equals(email, other.email) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name);
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

@@ -1,6 +1,5 @@
 package com.amigoscode.customer;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -8,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class CustomerRowMapperTest {
@@ -24,6 +22,7 @@ class CustomerRowMapperTest {
         Mockito.when(rs.getString("name")).thenReturn("Alex");
         Mockito.when(rs.getString("email")).thenReturn("Alex@gmail.com");
         Mockito.when(rs.getInt("age")).thenReturn(19);
+        Mockito.when(rs.getString("gender")).thenReturn("FEMALE");
         //When
         Customer actual = rowMapper.mapRow(rs, 1);
         //Then
@@ -31,8 +30,8 @@ class CustomerRowMapperTest {
                 1,
                 "Alex",
                 "Alex@gmail.com"
-                ,19
-        );
+                , "password", 19,
+                Gender.FEMALE);
         assertThat(actual).isEqualTo(expected);
     }
 }

@@ -20,7 +20,7 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
     @Override
     public List<Customer> getCustomers() {
         var sql = """
-                    SELECT * FROM customer ORDER BY id;
+                    SELECT id, name, email, password, age, gender FROM customer ORDER BY id;
                 """;
         //this we will extract it on it's own class--------------
         /*RowMapper<Customer> customerRowMapper = (rs, rowNum) -> {
@@ -43,7 +43,7 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
     @Override
     public Optional<Customer> selectCustomerById(Integer id) {
         var sql = """
-                    SELECT * FROM customer 
+                    SELECT id, name, email, password, age, gender FROM customer 
                     WHERE id = ?
                 
                 """;
@@ -56,9 +56,9 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
     @Override
     public void insertCustomer(Customer customer) {
         var sql = """
-                    INSERT INTO customer (name,email,age) VALUES (?,?,?)
+                    INSERT INTO customer (name,email,password,age,gender) VALUES (?,?,?,?,?)
                 """;
-        int result = jdbcTemplate.update(sql, customer.getName(), customer.getEmail(), customer.getAge());
+        int result = jdbcTemplate.update(sql, customer.getName(), customer.getEmail(), customer.getPassword(), customer.getAge(),customer.getGender().name());
 
         System.out.println("jdbcTemplate.update : "+result);// this means the number of rows inserted if we insert 10 customers the result will be 10 if insert 1 customer the result will be 1
 
@@ -134,5 +134,16 @@ public class CustomerJDBCDataAccessService implements CustomerDao{
         //End Methode of Amigoscode----------------------------------------------------------
 
 
+    }
+
+    @Override
+    public Optional<Customer> selectUserByEmail(String email) {
+        var sql = """
+                    SELECT id, name, email, password, age, gender FROM customer 
+                    WHERE email = ?
+                
+                """;
+
+        return jdbcTemplate.query(sql,customerRowMapper,email).stream().findFirst();
     }
 }

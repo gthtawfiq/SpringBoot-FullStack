@@ -1,18 +1,23 @@
 package com.amigoscode.customer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import exception.DuplicateResourceException;
-import exception.RequestValidationException;
-import exception.ResourceNotFound;
+import com.amigoscode.exception.DuplicateResourceException;
+import com.amigoscode.exception.RequestValidationException;
+import com.amigoscode.exception.ResourceNotFound;
 
 @Service
 public class CustomerService {
 	
 	private final CustomerDao customerdao;
+	private final PasswordEncoder passwordEncoder;
+
+	private final CustomerDTOMapper customerDTOMapper;
 
 	// This For JPA --------------------------------------
 	/*public CustomerService(@Qualifier("jpa") CustomerDao customerdao) {
@@ -22,19 +27,26 @@ public class CustomerService {
 	//End Of For JPA ---------------------------------
 
 	// This For JDBC ---------------------------------------
-	public CustomerService(@Qualifier("jdbc") CustomerDao customerdao) {
+	public CustomerService(@Qualifier("jdbc") CustomerDao customerdao, PasswordEncoder passwordEncoder, CustomerDTOMapper customerDTOMapper) {
 		super();
 		this.customerdao = customerdao;
+		this.passwordEncoder = passwordEncoder;
+		this.customerDTOMapper = customerDTOMapper;
 	}
 	// End Of For JDBC ---------------------------------------
 	
-	public List<Customer> getAllCustomers(){
-		return customerdao.getCustomers();
+	public List<CustomerDTO> getAllCustomers(){
+		return customerdao.getCustomers()
+				.stream()
+				.map(customerDTOMapper)
+				.collect(Collectors.toList());
 	}
 	
-	public Customer getCustomer(Integer id) {
+	public CustomerDTO getCustomer(Integer id) {
 		return customerdao.selectCustomerById(id)
+				.map(customerDTOMapper)
 				.orElseThrow(()-> new ResourceNotFound("Customer with [%s] not found".formatted(id)));
+
 	}
 	public void addCustomer (CustomerRegistrationRequest customerRegistrationRequest) {
 		if (customerdao.existsPersonWithEmail(customerRegistrationRequest.email())) {
@@ -44,8 +56,9 @@ public class CustomerService {
 		Customer customer = new Customer(
 					customerRegistrationRequest.name(),
 					customerRegistrationRequest.email(),
-					customerRegistrationRequest.age()
-				);
+					passwordEncoder.encode(customerRegistrationRequest.password()), 
+					customerRegistrationRequest.age(),
+                	customerRegistrationRequest.gender());
 		customerdao.insertCustomer(customer);
 	}
 	public void deleteCustomer(Integer id) {
@@ -56,9 +69,10 @@ public class CustomerService {
 	}
 	
 	public void updateCustomer(CustomerUpdateRequest customerUpdateRequest, Integer id) {
-		
-		
-		Customer customer = getCustomer(id);
+
+
+		Customer customer = customerdao.selectCustomerById(id)
+							.orElseThrow(()-> new ResourceNotFound("Customer with [%s] not found".formatted(id)));
 		boolean changes= false;
 		
 		if(customerUpdateRequest.name()!=null && !customerUpdateRequest.name().equals(customer.getName())) {
